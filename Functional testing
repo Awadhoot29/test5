@@ -1,0 +1,66 @@
+package POM_DDF;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import POM.KiteLoginPage1;
+import POM.KiteLoginPage2;
+import POM.KiteLoginPage3;
+
+public class KiteTestClass 
+{
+	public static void main(String[] args) throws InterruptedException, EncryptedDocumentException, IOException
+    {
+    	System.setProperty("webdriver.chrome.driver","C:\\Users\\admin\\Documents\\chromedriver.exe");
+		
+		WebDriver driver=new ChromeDriver();
+		
+		//To enter URL on the webpage/To open an application
+		driver.get("https://kite.zerodha.com");
+		
+    	driver.manage().window().maximize();
+    	
+    	Thread.sleep(2000);
+    	
+    	 //To reach upto the Excel sheet
+        FileInputStream File=new FileInputStream("C:\\Users\\admin\\Documents\\Awadhoot_parameterization.xlsx");
+        
+        Sheet Sh=WorkbookFactory.create(File).getSheet("Sheet10");                        //fileinputstream is a constructor
+                                                                                       //workbookfactory is class 
+        
+    	//Create Object of POM-1 Class
+    	 KiteLoginPage1  login1=new  KiteLoginPage1(driver);
+    	       //Enter UserID
+    	   String UserID =   Sh.getRow(0).getCell(0).getStringCellValue();
+    	          login1.EnterUserName();
+    	      //Enter Password
+    	    String Pass=Sh.getRow(0).getCell(1).getStringCellValue();
+    	           login1.EnterPassword();
+    	           
+    	           login1.ClickLoginButton();
+    	          
+    	         Thread.sleep(2000);
+    	//Create Object of POM-2 Class
+    	   KiteLoginPage2  login2=new KiteLoginPage2(driver);
+    	        //Enter PIN
+    	   String   PIN = Sh.getRow(0).getCell(2).getStringCellValue();
+    	           
+    	           login2.ClickContinueButton();
+    	                       
+    	   Thread.sleep(2000);            
+    	//Create Object of POM-3 Class
+    	     KiteLoginPage3 Homepage=new KiteLoginPage3(driver);
+    	          //Verify UserID
+    	    String  ExpectedUserID= Sh.getRow(0).getCell(3).getStringCellValue();
+    	              
+    	              Homepage.VerifyUserId();
+	
+	}
+}
